@@ -5,8 +5,8 @@ import com.arcadis.otpsmoketests.configuration.Configuration;
 import com.arcadis.otpsmoketests.configuration.ConfigurationLoader;
 import com.arcadis.otpsmoketests.runner.CustomTestRunner;
 import io.javalin.Javalin;
-import io.javalin.json.JavalinJackson;
 import io.javalin.http.staticfiles.Location;
+import io.javalin.json.JavalinJackson;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.prometheus.PrometheusConfig;
@@ -61,8 +61,9 @@ public class OtpMonitoringApplication {
           jConfig.jsonMapper(new JavalinJackson());
           if (
             OtpMonitoringApplication.class.getResource(
-              "/web/suite-builder/index.html"
-            ) != null
+                "/web/suite-builder/index.html"
+              ) !=
+            null
           ) {
             jConfig.staticFiles.add(staticFiles -> {
               staticFiles.hostedPath = "/suite-builder";
@@ -85,9 +86,7 @@ public class OtpMonitoringApplication {
       testRunner.scheduleTestSuites(scheduler);
       scheduler.start();
 
-      logger.info(
-        "OTP Sentinel started on port 8080, metrics at /metrics"
-      );
+      logger.info("OTP Sentinel started on port 8080, metrics at /metrics");
 
       // Add shutdown hook
       Runtime
