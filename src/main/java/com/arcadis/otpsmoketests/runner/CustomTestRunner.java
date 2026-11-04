@@ -2,6 +2,7 @@ package com.arcadis.otpsmoketests.runner;
 
 import com.arcadis.otpsmoketests.BaseTestSuite;
 import com.arcadis.otpsmoketests.ExecutableTestCase;
+import com.arcadis.otpsmoketests.results.Results;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -22,8 +23,19 @@ public class CustomTestRunner {
     String testName,
     boolean passed,
     Throwable exception,
-    long durationMs
-  ) {}
+    long durationMs,
+    String displayName,
+    List<Results.Request> requests
+  ) {
+    public TestResult(
+      String testName,
+      boolean passed,
+      Throwable exception,
+      long durationMs
+    ) {
+      this(testName, passed, exception, durationMs, testName, List.of());
+    }
+  }
 
   public record SuiteResult(
     String suiteName,
@@ -57,13 +69,11 @@ public class CustomTestRunner {
     long suiteStartTime = System.nanoTime();
 
     List<ExecutableTestCase> testCases;
+    BaseTestSuite suiteInstance;
     try {
-      BaseTestSuite suiteInstance = getBaseTestSuite(
-        suiteClass,
-        baseUrl,
-        deploymentName
-      );
+      suiteInstance = getBaseTestSuite(suiteClass, baseUrl, deploymentName);
       testCases = discoverTestCases(suiteClass, suiteInstance);
+      suiteInstance.drainRequests();
     } catch (
       ReflectiveOperationException | RuntimeException | AssertionError e
     ) {
@@ -85,7 +95,14 @@ public class CustomTestRunner {
         logger.error("Test failed: {}.{}", suiteName, testCase.id(), failure);
       }
       testResults.add(
-        new TestResult(testCase.id(), failure == null, failure, elapsed(start))
+        new TestResult(
+          testCase.id(),
+          failure == null,
+          failure,
+          elapsed(start),
+          testCase.displayName(),
+          suiteInstance.drainRequests()
+        )
       );
     }
     return new SuiteResult(suiteName, testResults, elapsed(suiteStartTime));

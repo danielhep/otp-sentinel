@@ -66,7 +66,16 @@ public class ConfigurationLoader {
 
     Class<BaseTestSuite> clazz = resolveTestSuiteClass(className);
 
-    return new Configuration.TestSuite(name, clazz, interval);
+    String id = testSuiteNode
+      .getProperty("id")
+      .map(value -> value.value().toString())
+      .orElse(null);
+    if (id != null && !id.matches("[A-Za-z0-9][A-Za-z0-9._-]*")) {
+      throw new IllegalArgumentException(
+        "Suite id must contain only letters, digits, periods, underscores or hyphens"
+      );
+    }
+    return new Configuration.TestSuite(name, clazz, interval, id);
   }
 
   @SuppressWarnings("unchecked")

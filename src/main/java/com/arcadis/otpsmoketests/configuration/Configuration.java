@@ -15,6 +15,11 @@ public record Configuration(
   public record TestSuite(
     String name,
     Class<BaseTestSuite> clazz,
-    String interval
-  ) {}
+    String interval,
+    String id
+  ) {
+    public TestSuite(String name, Class<BaseTestSuite> clazz, String interval) {
+      this(name, clazz, interval, null);
+    }
+  }
 }
