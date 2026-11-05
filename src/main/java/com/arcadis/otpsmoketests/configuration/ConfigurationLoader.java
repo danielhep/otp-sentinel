@@ -73,7 +73,7 @@ public class ConfigurationLoader {
           node,
           "retention-days",
           defaults.retention().toDays(),
-          Long.MAX_VALUE / 86_400
+          36_500
         )
       ),
       (int) readPositiveInteger(
