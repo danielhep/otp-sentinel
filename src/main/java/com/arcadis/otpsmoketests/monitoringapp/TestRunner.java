@@ -8,6 +8,7 @@ import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import it.sauronsoftware.cron4j.Scheduler;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.time.Clock;
 import java.time.Duration;
 import java.util.*;
@@ -38,16 +39,17 @@ class TestRunner {
   TestRunner(
     MeterRegistry registry,
     Configuration config,
-    ResultSettings settings,
+    Path resultsDirectory,
     Clock clock
   ) throws IOException {
     this.clock = clock;
     for (var deployment : config.deploymentsUnderTest()) {
       for (var suite : deployment.suites()) addSuite(deployment, suite);
     }
+    var settings = config.results();
     results =
       new ResultStore(
-        settings.directory(),
+        resultsDirectory,
         suites.values().stream().map(SuiteExecution::suite).toList(),
         settings.retention(),
         settings.maxRuns(),

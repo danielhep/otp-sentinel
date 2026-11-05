@@ -40,10 +40,12 @@ Individual runs also include every test outcome, resolved journey requests,
 returned itineraries and nested assertion diagnostics. Historical reports remain
 unchanged when a later execution passes.
 
-Reports are stored in `results/` by default. Mount `/app/results` to persistent
-storage when using Docker; the example Compose configuration includes a named
-volume. Retention defaults to seven days and 5,000 runs, retaining each suite's
-latest completed run even when it becomes stale. See the
+Reports are stored in `results/` relative to the working directory. Mount
+`/app/results` to persistent storage when using Docker; the example Compose
+configuration includes a named volume. Retention defaults to seven days and
+5,000 runs, retaining each suite's latest completed run even when it becomes
+stale. Configure retention with an optional top-level `results` node in
+`config.kdl`. See the
 [results API documentation](docs/results-api.md) for response examples,
 configuration and Grafana integration.
 

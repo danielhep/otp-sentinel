@@ -22,7 +22,6 @@ WORKDIR /app
 COPY --from=builder /app/target/otp-sentinel-*.jar app.jar
 
 EXPOSE 8080
-ENV SENTINEL_RESULTS_DIR=/app/results
 # Mount the deployment configuration at /app/config.kdl when starting the container.
 ENTRYPOINT ["java", "-jar", "app.jar"]
 CMD ["/app/config.kdl"]

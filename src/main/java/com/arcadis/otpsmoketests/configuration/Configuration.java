@@ -1,10 +1,12 @@
 package com.arcadis.otpsmoketests.configuration;
 
 import com.arcadis.otpsmoketests.BaseTestSuite;
+import com.arcadis.otpsmoketests.results.ResultSettings;
 import java.util.Collection;
 
 public record Configuration(
-  Collection<DeploymentUnderTest> deploymentsUnderTest
+  Collection<DeploymentUnderTest> deploymentsUnderTest,
+  ResultSettings results
 ) {
   public record DeploymentUnderTest(
     String name,

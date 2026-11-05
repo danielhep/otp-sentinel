@@ -110,15 +110,29 @@ have ordinary test error details but no journey request snapshot.
 
 ## Storage and retention
 
-| Environment variable | Default |
-| --- | --- |
-| `SENTINEL_RESULTS_DIR` | `results` (`/app/results` in Docker) |
-| `SENTINEL_RESULTS_RETENTION_DAYS` | `7` |
-| `SENTINEL_RESULTS_MAX_RUNS` | `5000` |
+Configure retention with an optional top-level node in `config.kdl`:
 
-Mount the results directory to persistent storage. The store reloads reports and
-last-run metric values at startup. Full plans remain on disk; memory holds the
-history index and the latest compact summary for each suite.
+```kdl
+results retention-days=7 max-runs=5000
+```
+
+| Property | Default |
+| --- | --- |
+| `retention-days` | `7` |
+| `max-runs` | `5000` |
+
+Omitting the node or any property uses the corresponding default. Retention days
+and maximum runs must be positive integers. Only one `results` node is allowed.
+Invalid settings are rejected while loading configuration. The former
+`SENTINEL_RESULTS_*` environment variables are no longer read; move custom
+retention values into this node.
+
+Reports are always stored in `results/` relative to the process working directory,
+which gives `/app/results` in Docker. Mount `/app/results` to persistent storage;
+the volume mount controls where reports live outside the container.
+The store reloads reports and last-run metric values at startup. Full plans remain
+on disk; memory holds the history index and the latest compact summary for each
+suite.
 
 Expired runs are removed on publication and startup, and are unavailable through
 the API after expiry. Oldest historical runs are also removed to enforce the run

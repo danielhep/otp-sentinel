@@ -1,13 +1,16 @@
 package com.arcadis.otpsmoketests.configuration;
 
 import com.arcadis.otpsmoketests.BaseTestSuite;
+import com.arcadis.otpsmoketests.results.ResultSettings;
 import dev.kdl.KdlDocument;
 import dev.kdl.KdlNode;
 import dev.kdl.parse.KdlParseException;
 import dev.kdl.parse.KdlParser;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +34,81 @@ public class ConfigurationLoader {
       }
     }
 
-    return new Configuration(deployments);
+    ResultSettings results = parseResults(document);
+    long suiteCount = deployments
+      .stream()
+      .mapToLong(d -> d.suites().size())
+      .sum();
+    if (results.maxRuns() < suiteCount) {
+      throw new IllegalArgumentException(
+        "results max-runs must cover every configured suite (" +
+        suiteCount +
+        ")"
+      );
+    }
+    return new Configuration(deployments, results);
+  }
+
+  private static ResultSettings parseResults(KdlDocument document) {
+    var nodes = document
+      .nodes()
+      .stream()
+      .filter(node -> "results".equals(node.name()))
+      .toList();
+    if (nodes.size() > 1) {
+      throw new IllegalArgumentException("Only one results node is allowed");
+    }
+    return nodes
+      .stream()
+      .findFirst()
+      .map(ConfigurationLoader::parseResultSettings)
+      .orElseGet(ResultSettings::defaults);
+  }
+
+  private static ResultSettings parseResultSettings(KdlNode node) {
+    var defaults = ResultSettings.defaults();
+    return new ResultSettings(
+      Duration.ofDays(
+        readPositiveInteger(
+          node,
+          "retention-days",
+          defaults.retention().toDays(),
+          Long.MAX_VALUE / 86_400
+        )
+      ),
+      (int) readPositiveInteger(
+        node,
+        "max-runs",
+        defaults.maxRuns(),
+        Integer.MAX_VALUE
+      )
+    );
+  }
+
+  private static long readPositiveInteger(
+    KdlNode node,
+    String property,
+    long defaultValue,
+    long maximum
+  ) {
+    return node
+      .getProperty(property)
+      .map(value -> {
+        if (
+          !(value.value() instanceof BigInteger number) ||
+          number.signum() <= 0 ||
+          number.compareTo(BigInteger.valueOf(maximum)) > 0
+        ) {
+          throw new IllegalArgumentException(
+            "results " +
+            property +
+            " must be an integer between 1 and " +
+            maximum
+          );
+        }
+        return number.longValueExact();
+      })
+      .orElse(defaultValue);
   }
 
   private static Configuration.DeploymentUnderTest parseDeployment(

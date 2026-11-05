@@ -4,7 +4,6 @@ import com.arcadis.otpsmoketests.BaseTestSuite;
 import com.arcadis.otpsmoketests.configuration.Configuration;
 import com.arcadis.otpsmoketests.configuration.ConfigurationLoader;
 import com.arcadis.otpsmoketests.results.ResultJson;
-import com.arcadis.otpsmoketests.results.ResultSettings;
 import com.arcadis.otpsmoketests.results.ResultsApi;
 import io.javalin.Javalin;
 import io.javalin.http.staticfiles.Location;
@@ -12,6 +11,7 @@ import io.javalin.json.JavalinJackson;
 import io.micrometer.prometheus.PrometheusConfig;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
 import it.sauronsoftware.cron4j.Scheduler;
+import java.nio.file.Path;
 import java.time.Clock;
 import java.util.*;
 import org.slf4j.Logger;
@@ -53,7 +53,7 @@ public class OtpMonitoringApplication {
       TestRunner testRunner = new TestRunner(
         meterRegistry,
         config,
-        ResultSettings.fromEnvironment(),
+        Path.of("results"),
         Clock.systemUTC()
       );
 

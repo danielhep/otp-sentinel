@@ -17,6 +17,7 @@ import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.http.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.*;
 import java.util.*;
@@ -127,6 +128,7 @@ class ResultsApiTest {
       );
       releaseRequest.countDown();
       var run = execution.get(10, TimeUnit.SECONDS);
+      assertTrue(Files.isRegularFile(directory.resolve(run.runId() + ".json")));
       var latest = get("/suites/hopelink-prod.basic/latest");
       assertEquals(run.runId(), latest.path("runId").asText());
       assertEquals(1, latest.at("/counts/failed").asInt());
@@ -288,6 +290,7 @@ class ResultsApiTest {
   ) throws Exception {
     var config = ConfigurationLoader.loadFromString(
       """
+      results retention-days=7 max-runs=100
       deployment name="Hope Link Prod" url="%s" {
         test-suite id="hopelink-prod.basic" name="Hope Link Basic" class="%s" interval="*/10 * * * *"
       }
@@ -296,12 +299,7 @@ class ResultsApiTest {
           type.getName()
         )
     );
-    return new TestRunner(
-      metrics,
-      config,
-      new ResultSettings(directory, Duration.ofDays(7), 100),
-      Clock.systemUTC()
-    );
+    return new TestRunner(metrics, config, directory, Clock.systemUTC());
   }
 
   private void serve(TestRunner runner) {
