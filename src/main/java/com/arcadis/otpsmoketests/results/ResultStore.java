@@ -134,9 +134,9 @@ public final class ResultStore {
           if (
             run.schemaVersion() != 1 || !file.equals(file(run.runId()))
           ) throw new IOException("Unsupported run snapshot");
-          if (suites.containsKey(run.suiteId())) index(run); else Files.delete(
-            file
-          );
+          if (suites.containsKey(run.suiteId())) index(run); else if (
+            run.completedAt().isBefore(clock.instant().minus(retention))
+          ) Files.delete(file);
         } catch (IOException | RuntimeException e) {
           LOG.warn("Ignoring invalid run snapshot {}", file, e);
         }
