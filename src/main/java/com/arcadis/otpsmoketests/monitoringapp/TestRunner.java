@@ -200,12 +200,12 @@ class TestRunner {
         clock.instant(),
         outcome
       );
-      results.publish(report);
       execution.testsRun().set(report.counts().total());
       execution.testsFailed().set(report.counts().failed());
       execution.durationMs().set(report.durationMs());
       execution.completedAt().set(report.completedAt().getEpochSecond());
       logReport(report);
+      results.publish(report);
       return report;
     }
   }

@@ -94,7 +94,9 @@ public final class ResultStore {
   public synchronized Optional<Results.Run> run(String runId)
     throws IOException {
     var run = runs.get(runId);
-    if (run == null || !retained(run)) return Optional.empty();
+    if (
+      run == null || !suites.containsKey(run.suiteId()) || !retained(run)
+    ) return Optional.empty();
     return Optional.of(
       mapper.readValue(file(runId).toFile(), Results.Run.class)
     );
@@ -134,9 +136,7 @@ public final class ResultStore {
           if (
             run.schemaVersion() != 1 || !file.equals(file(run.runId()))
           ) throw new IOException("Unsupported run snapshot");
-          if (suites.containsKey(run.suiteId())) index(run); else if (
-            run.completedAt().isBefore(clock.instant().minus(retention))
-          ) Files.delete(file);
+          index(run);
         } catch (IOException | RuntimeException e) {
           LOG.warn("Ignoring invalid run snapshot {}", file, e);
         }
@@ -149,6 +149,7 @@ public final class ResultStore {
       run.runId(),
       new StoredRun(run.runId(), run.suiteId(), run.completedAt())
     );
+    if (!suites.containsKey(run.suiteId())) return;
     latest.merge(
       run.suiteId(),
       Results.Latest.of(suites.get(run.suiteId()), run),
@@ -157,9 +158,14 @@ public final class ResultStore {
     );
   }
 
+  private boolean isLatest(StoredRun run) {
+    var current = latest.get(run.suiteId());
+    return current != null && current.runId().equals(run.runId());
+  }
+
   private boolean retained(StoredRun run) {
     return (
-      latest.get(run.suiteId()).runId().equals(run.runId()) ||
+      isLatest(run) ||
       !run.completedAt().isBefore(clock.instant().minus(retention))
     );
   }
@@ -168,7 +174,7 @@ public final class ResultStore {
     var removable = runs
       .values()
       .stream()
-      .filter(run -> !latest.get(run.suiteId()).runId().equals(run.runId()))
+      .filter(run -> !isLatest(run))
       .sorted(Comparator.comparing(StoredRun::completedAt))
       .toList();
     for (var run : removable) {
