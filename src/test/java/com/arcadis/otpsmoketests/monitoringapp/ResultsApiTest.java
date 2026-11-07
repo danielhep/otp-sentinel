@@ -3,6 +3,9 @@ package com.arcadis.otpsmoketests.monitoringapp;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.opentripplanner.assertions.Expectations.*;
 
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import com.arcadis.otpsmoketests.BaseTestSuite;
 import com.arcadis.otpsmoketests.ExecutableTestCase;
 import com.arcadis.otpsmoketests.configuration.ConfigurationLoader;
@@ -13,6 +16,7 @@ import io.javalin.Javalin;
 import io.javalin.json.JavalinJackson;
 import io.micrometer.prometheus.PrometheusConfig;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.http.*;
@@ -32,6 +36,7 @@ import org.opentripplanner.assertions.PlanExpectation;
 import org.opentripplanner.client.model.Coordinate;
 import org.opentripplanner.client.model.RequestMode;
 import org.opentripplanner.client.parameters.TripPlanParameters;
+import org.slf4j.LoggerFactory;
 
 class ResultsApiTest {
 
@@ -43,6 +48,7 @@ class ResultsApiTest {
   private String otpUrl;
   private volatile String route = "999";
   private volatile int responseStatus = 200;
+  private volatile String responseBody;
   private final AtomicInteger requests = new AtomicInteger();
   private final CountDownLatch requestEntered = new CountDownLatch(1);
   private final CountDownLatch releaseRequest = new CountDownLatch(1);
@@ -86,6 +92,7 @@ class ResultsApiTest {
               route
             );
         if (omitEndTime) body = body.replace("\"endTime\":1793637300000,", "");
+        if (responseBody != null) body = responseBody;
         byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
         exchange.getResponseHeaders().set("Content-Type", "application/json");
         exchange.sendResponseHeaders(responseStatus, bytes.length);
@@ -218,6 +225,61 @@ class ResultsApiTest {
   }
 
   @Test
+  void publishingFailureStillUpdatesExecutionMetricsAndLogsReport()
+    throws Exception {
+    var runner = runner(JourneySuite.class, registry);
+    Files.delete(directory);
+    Files.createFile(directory);
+    var logger = (Logger) LoggerFactory.getLogger(TestRunner.class);
+    var logs = new ListAppender<ILoggingEvent>();
+    logs.start();
+    logger.addAppender(logs);
+    long startedAt = Instant.now().getEpochSecond();
+    try {
+      assertThrows(
+        IOException.class,
+        () -> runner.runSuite("hopelink-prod.basic", "scheduled")
+      );
+      String prefix = "otp.tests.Hope Link Prod.Hope Link Basic.";
+      assertAll(
+        () -> assertEquals(
+          2,
+          registry.get(prefix + "tests_run").gauge().value()
+        ),
+        () -> assertEquals(
+          1,
+          registry.get(prefix + "tests_failed").gauge().value()
+        ),
+        () -> assertTrue(
+          registry
+            .get(prefix + "last_completed_timestamp_seconds")
+            .gauge()
+            .value() >= startedAt
+        ),
+        () -> assertTrue(
+          logs.list
+            .stream()
+            .anyMatch(event ->
+              event.getFormattedMessage().startsWith("Sentinel check failed:")
+            )
+        ),
+        () -> assertTrue(
+          logs.list
+            .stream()
+            .anyMatch(event ->
+              event
+                .getFormattedMessage()
+                .startsWith("Sentinel suite completed:")
+            )
+        )
+      );
+    } finally {
+      logger.detachAppender(logs);
+      logs.stop();
+    }
+  }
+
+  @Test
   void requestFailureRetainsRequestWithoutInventingAssertionDiagnostics()
     throws Exception {
     responseStatus = 503;
@@ -239,6 +301,43 @@ class ResultsApiTest {
   }
 
   @Test
+  void responseSnapshotFailurePreservesOtpResponseAndRequestRecord()
+    throws Exception {
+    responseBody = """
+      {"data":{"plan":{"itineraries":[null]}}}
+      """;
+    var apiClient = new TimedOtpApiClient(
+      ZoneId.of("America/Chicago"),
+      otpUrl,
+      registry,
+      "diagnostics"
+    );
+    var parameters = TripPlanParameters
+      .builder()
+      .withFrom(new Coordinate(44.9, -93.2))
+      .withTo(new Coordinate(44.95, -93.25))
+      .withTime(LocalDateTime.of(2026, 11, 6, 12, 0))
+      .withModes(Set.of(RequestMode.TRANSIT, RequestMode.WALK))
+      .build();
+
+    var response = apiClient.plan(parameters);
+
+    assertNotNull(response);
+    assertEquals(1, response.itineraries().size());
+    assertNull(response.itineraries().getFirst());
+    var captured = apiClient.drainRequests();
+    assertEquals(1, captured.size());
+    var request = captured.getFirst();
+    assertEquals(otpUrl, request.endpoint());
+    assertEquals("America/Chicago", request.timeZone());
+    assertEquals(
+      "44.9,-93.2::44.9,-93.2",
+      request.parameters().fromPlace()
+    );
+    assertNull(request.response());
+  }
+
+  @Test
   void capturingIncompleteResponsesDoesNotTurnPassingChecksIntoFailures()
     throws Exception {
     route = "560";
@@ -246,15 +345,18 @@ class ResultsApiTest {
     var runner = runner(JourneySuite.class, registry);
     var run = runner.runSuite("hopelink-prod.basic", "scheduled");
     assertEquals("passed", run.status());
-    assertTrue(
+    assertNull(
       run
         .tests()
         .get(1)
         .requests()
         .getFirst()
         .response()
-        .at("/itineraries/0/legs/0/endTime")
-        .isNull()
+        .itineraries()
+        .getFirst()
+        .legs()
+        .getFirst()
+        .endTime()
     );
   }
 

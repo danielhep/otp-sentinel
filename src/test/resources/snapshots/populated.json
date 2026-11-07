@@ -1,0 +1,312 @@
+{
+  "failure" : {
+    "kind" : "assertion",
+    "exceptionType" : "org.opentripplanner.assertions.ItineraryAssertionError",
+    "message" : "Expected itinerary did not match",
+    "stackTrace" : "stack trace",
+    "diagnostics" : {
+      "description" : "All expectations must match",
+      "matches" : false,
+      "matchingMode" : null,
+      "expectedLegs" : [ ],
+      "itineraryCriteria" : [ ],
+      "plan" : {
+        "itineraries" : [ {
+          "legs" : [ {
+            "mode" : "BUS",
+            "startTime" : "2026-11-02T10:30-06:00",
+            "endTime" : "2026-11-02T10:35-06:00",
+            "durationSeconds" : 300,
+            "distanceMeters" : 400.5,
+            "interlineWithPreviousLeg" : true,
+            "realTime" : true,
+            "from" : {
+              "name" : "Downtown",
+              "latitude" : 44.9,
+              "longitude" : -93.2
+            },
+            "to" : {
+              "name" : "Airport",
+              "latitude" : 44.95,
+              "longitude" : -93.25
+            },
+            "headsign" : "Airport",
+            "route" : {
+              "id" : "feed:r",
+              "shortName" : "560",
+              "longName" : null
+            },
+            "geometry" : "_p~iF~ps|U_ulLnnqC_mqNvxq`@"
+          } ],
+          "accessibilityScore" : 0.75
+        } ],
+        "nextPageCursor" : "next",
+        "previousPageCursor" : "previous"
+      },
+      "children" : [ {
+        "description" : "At least one itinerary must match",
+        "matches" : true,
+        "matchingMode" : "UNORDERED_SUBSET",
+        "expectedLegs" : [ [ "route '[560]'" ] ],
+        "itineraryCriteria" : [ ],
+        "plan" : {
+          "itineraries" : [ {
+            "legs" : [ {
+              "mode" : "BUS",
+              "startTime" : "2026-11-02T10:30-06:00",
+              "endTime" : "2026-11-02T10:35-06:00",
+              "durationSeconds" : 300,
+              "distanceMeters" : 400.5,
+              "interlineWithPreviousLeg" : true,
+              "realTime" : true,
+              "from" : {
+                "name" : "Downtown",
+                "latitude" : 44.9,
+                "longitude" : -93.2
+              },
+              "to" : {
+                "name" : "Airport",
+                "latitude" : 44.95,
+                "longitude" : -93.25
+              },
+              "headsign" : "Airport",
+              "route" : {
+                "id" : "feed:r",
+                "shortName" : "560",
+                "longName" : null
+              },
+              "geometry" : "_p~iF~ps|U_ulLnnqC_mqNvxq`@"
+            } ],
+            "accessibilityScore" : 0.75
+          } ],
+          "nextPageCursor" : "next",
+          "previousPageCursor" : "previous"
+        },
+        "children" : [ ],
+        "itineraryResults" : [ {
+          "itineraryIndex" : 0,
+          "matches" : true,
+          "errors" : [ ],
+          "extraMatches" : [ ],
+          "legResults" : [ {
+            "expectedLegIndex" : 0,
+            "status" : "MATCHED",
+            "expectedCriteria" : [ "route '[560]'" ],
+            "matchedLeg" : {
+              "actualLegIndex" : 0,
+              "leg" : {
+                "mode" : "BUS",
+                "startTime" : "2026-11-02T10:30-06:00",
+                "endTime" : "2026-11-02T10:35-06:00",
+                "durationSeconds" : 300,
+                "distanceMeters" : 400.5,
+                "interlineWithPreviousLeg" : true,
+                "realTime" : true,
+                "from" : {
+                  "name" : "Downtown",
+                  "latitude" : 44.9,
+                  "longitude" : -93.2
+                },
+                "to" : {
+                  "name" : "Airport",
+                  "latitude" : 44.95,
+                  "longitude" : -93.25
+                },
+                "headsign" : "Airport",
+                "route" : {
+                  "id" : "feed:r",
+                  "shortName" : "560",
+                  "longName" : null
+                },
+                "geometry" : "_p~iF~ps|U_ulLnnqC_mqNvxq`@"
+              },
+              "matchingCriteria" : [ "route '[560]'" ],
+              "missingCriteria" : [ ]
+            },
+            "candidates" : [ {
+              "actualLegIndex" : 0,
+              "leg" : {
+                "mode" : "BUS",
+                "startTime" : "2026-11-02T10:30-06:00",
+                "endTime" : "2026-11-02T10:35-06:00",
+                "durationSeconds" : 300,
+                "distanceMeters" : 400.5,
+                "interlineWithPreviousLeg" : true,
+                "realTime" : true,
+                "from" : {
+                  "name" : "Downtown",
+                  "latitude" : 44.9,
+                  "longitude" : -93.2
+                },
+                "to" : {
+                  "name" : "Airport",
+                  "latitude" : 44.95,
+                  "longitude" : -93.25
+                },
+                "headsign" : "Airport",
+                "route" : {
+                  "id" : "feed:r",
+                  "shortName" : "560",
+                  "longName" : null
+                },
+                "geometry" : "_p~iF~ps|U_ulLnnqC_mqNvxq`@"
+              },
+              "matchingCriteria" : [ "route '[560]'" ],
+              "missingCriteria" : [ ]
+            } ]
+          } ]
+        } ]
+      }, {
+        "description" : "At least one itinerary must match",
+        "matches" : false,
+        "matchingMode" : "UNORDERED_SUBSET",
+        "expectedLegs" : [ [ "route '[999]'" ] ],
+        "itineraryCriteria" : [ ],
+        "plan" : {
+          "itineraries" : [ {
+            "legs" : [ {
+              "mode" : "BUS",
+              "startTime" : "2026-11-02T10:30-06:00",
+              "endTime" : "2026-11-02T10:35-06:00",
+              "durationSeconds" : 300,
+              "distanceMeters" : 400.5,
+              "interlineWithPreviousLeg" : true,
+              "realTime" : true,
+              "from" : {
+                "name" : "Downtown",
+                "latitude" : 44.9,
+                "longitude" : -93.2
+              },
+              "to" : {
+                "name" : "Airport",
+                "latitude" : 44.95,
+                "longitude" : -93.25
+              },
+              "headsign" : "Airport",
+              "route" : {
+                "id" : "feed:r",
+                "shortName" : "560",
+                "longName" : null
+              },
+              "geometry" : "_p~iF~ps|U_ulLnnqC_mqNvxq`@"
+            } ],
+            "accessibilityScore" : 0.75
+          } ],
+          "nextPageCursor" : "next",
+          "previousPageCursor" : "previous"
+        },
+        "children" : [ ],
+        "itineraryResults" : [ {
+          "itineraryIndex" : 0,
+          "matches" : false,
+          "errors" : [ ],
+          "extraMatches" : [ ],
+          "legResults" : [ {
+            "expectedLegIndex" : 0,
+            "status" : "CRITERIA_MISMATCH",
+            "expectedCriteria" : [ "route '[999]'" ],
+            "matchedLeg" : null,
+            "candidates" : [ {
+              "actualLegIndex" : 0,
+              "leg" : {
+                "mode" : "BUS",
+                "startTime" : "2026-11-02T10:30-06:00",
+                "endTime" : "2026-11-02T10:35-06:00",
+                "durationSeconds" : 300,
+                "distanceMeters" : 400.5,
+                "interlineWithPreviousLeg" : true,
+                "realTime" : true,
+                "from" : {
+                  "name" : "Downtown",
+                  "latitude" : 44.9,
+                  "longitude" : -93.2
+                },
+                "to" : {
+                  "name" : "Airport",
+                  "latitude" : 44.95,
+                  "longitude" : -93.25
+                },
+                "headsign" : "Airport",
+                "route" : {
+                  "id" : "feed:r",
+                  "shortName" : "560",
+                  "longName" : null
+                },
+                "geometry" : "_p~iF~ps|U_ulLnnqC_mqNvxq`@"
+              },
+              "matchingCriteria" : [ ],
+              "missingCriteria" : [ "route '[999]'" ]
+            } ]
+          } ]
+        } ]
+      } ],
+      "itineraryResults" : [ ]
+    }
+  },
+  "request" : {
+    "endpoint" : "https://otp.example",
+    "timeZone" : "America/Chicago",
+    "parameters" : {
+      "fromPlace" : "44.9,-93.2::44.9,-93.2",
+      "toPlace" : "44.95,-93.25::44.95,-93.25",
+      "journeyTime" : "2026-11-06T12:00",
+      "searchDirection" : "ARRIVE_BY",
+      "numItineraries" : 3,
+      "wheelchair" : true,
+      "modes" : [ "TRANSIT", "WALK" ],
+      "searchWindowSeconds" : 90,
+      "walkReluctance" : 1.5,
+      "carReluctance" : 2.5,
+      "bikeReluctance" : 3.5,
+      "bikeWalkingReluctance" : 4.5,
+      "walkSpeed" : 1.25,
+      "optimize" : "TRIANGLE",
+      "pageCursor" : "next-page",
+      "banned" : {
+        "routes" : "feed:route",
+        "agencies" : null,
+        "trips" : "feed:trip",
+        "stops" : null,
+        "stopsHard" : "feed:stop"
+      },
+      "triangle" : {
+        "safetyFactor" : 0.2,
+        "slopeFactor" : 0.3,
+        "timeFactor" : 0.5
+      }
+    },
+    "response" : {
+      "itineraries" : [ {
+        "legs" : [ {
+          "mode" : "BUS",
+          "startTime" : "2026-11-02T10:30-06:00",
+          "endTime" : "2026-11-02T10:35-06:00",
+          "durationSeconds" : 300,
+          "distanceMeters" : 400.5,
+          "interlineWithPreviousLeg" : true,
+          "realTime" : true,
+          "from" : {
+            "name" : "Downtown",
+            "latitude" : 44.9,
+            "longitude" : -93.2
+          },
+          "to" : {
+            "name" : "Airport",
+            "latitude" : 44.95,
+            "longitude" : -93.25
+          },
+          "headsign" : "Airport",
+          "route" : {
+            "id" : "feed:r",
+            "shortName" : "560",
+            "longName" : null
+          },
+          "geometry" : "_p~iF~ps|U_ulLnnqC_mqNvxq`@"
+        } ],
+        "accessibilityScore" : 0.75
+      } ],
+      "nextPageCursor" : "next",
+      "previousPageCursor" : "previous"
+    }
+  }
+}
