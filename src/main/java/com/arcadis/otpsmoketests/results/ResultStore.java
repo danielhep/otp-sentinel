@@ -102,8 +102,11 @@ public final class ResultStore {
     );
   }
 
+  /**
+   * Records a new suite run. Stores the results to a json file and the in memory index
+   * @param run Run to be recorded
+   */
   public synchronized void publish(Results.Run run) throws IOException {
-    UUID.fromString(run.runId());
     if (!suites.containsKey(run.suiteId())) throw new IllegalArgumentException(
       "Unknown suite: " + run.suiteId()
     );
@@ -125,6 +128,9 @@ public final class ResultStore {
     }
   }
 
+  /**
+   * Reconstructs the run index based on results files
+   */
   private void load() throws IOException {
     try (var files = Files.list(directory)) {
       for (var file : files
@@ -132,7 +138,6 @@ public final class ResultStore {
         .toList()) {
         try {
           var run = mapper.readValue(file.toFile(), Results.Run.class);
-          UUID.fromString(run.runId());
           if (
             run.schemaVersion() != 1 || !file.equals(file(run.runId()))
           ) throw new IOException("Unsupported run snapshot");
@@ -144,12 +149,19 @@ public final class ResultStore {
     }
   }
 
+  /**
+   * Indexes a run into an in memory cache so we don't have to check the filesystem
+   * for every request
+   * @param run Run to be indexed
+   */
   private void index(Results.Run run) {
     runs.put(
       run.runId(),
       new StoredRun(run.runId(), run.suiteId(), run.completedAt())
     );
     if (!suites.containsKey(run.suiteId())) return;
+    // Replace the latest run record for this suite
+    // The comparison lambda is used to determine which one comes later
     latest.merge(
       run.suiteId(),
       Results.Latest.of(suites.get(run.suiteId()), run),
@@ -163,6 +175,9 @@ public final class ResultStore {
     return current != null && current.runId().equals(run.runId());
   }
 
+  /**
+   * Determine whether this run should be retained
+   */
   private boolean retained(StoredRun run) {
     return (
       isLatest(run) ||
@@ -170,6 +185,9 @@ public final class ResultStore {
     );
   }
 
+  /**
+   * Removes old runs based on retention rules (removes the file and the entry from the index
+   */
   private void prune() throws IOException {
     var removable = runs
       .values()
