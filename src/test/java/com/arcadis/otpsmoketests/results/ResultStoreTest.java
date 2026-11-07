@@ -64,12 +64,70 @@ class ResultStoreTest {
       assertEquals(
         3,
         files
-          .filter(p ->
-            p.getFileName().toString().matches("[0-9a-f-]{36}\\.json")
-          )
+          .filter(p -> {
+            String name = p.getFileName().toString();
+            return name.startsWith("run-") && name.endsWith(".json");
+          })
           .count()
       );
     }
+  }
+
+  @Test
+  void unconfiguredSnapshotsStayHiddenAndArePrunedAfterExpiring()
+    throws Exception {
+    var configured = run("a", now.minus(Duration.ofDays(10)));
+    store().publish(configured);
+    var unconfigured = run("removed", now);
+    var snapshot = directory.resolve(unconfigured.runId() + ".json");
+    ResultJson.mapper().writeValue(snapshot.toFile(), unconfigured);
+    var clock = new Clock() {
+      Instant current = now;
+
+      @Override
+      public ZoneId getZone() {
+        return ZoneOffset.UTC;
+      }
+
+      @Override
+      public Clock withZone(ZoneId zone) {
+        return Clock.fixed(current, zone);
+      }
+
+      @Override
+      public Instant instant() {
+        return current;
+      }
+    };
+    var restarted = new ResultStore(
+      directory,
+      suites,
+      Duration.ofDays(7),
+      3,
+      clock
+    );
+    assertTrue(Files.exists(snapshot));
+    assertTrue(restarted.run(unconfigured.runId()).isEmpty());
+    assertTrue(restarted.latest("removed").isEmpty());
+    assertEquals(
+      List.of("a", "b"),
+      restarted.suites().stream().map(Results.SuiteSummary::id).toList()
+    );
+    assertEquals(
+      configured.runId(),
+      restarted.latest("a").orElseThrow().runId()
+    );
+    assertEquals("never_run", restarted.latest("b").orElseThrow().status());
+
+    clock.current = now.plus(Duration.ofDays(8));
+    restarted.publish(run("b", clock.instant()));
+
+    assertFalse(Files.exists(snapshot));
+    assertEquals(configured, restarted.run(configured.runId()).orElseThrow());
+    assertEquals(
+      configured.runId(),
+      restarted.latest("a").orElseThrow().runId()
+    );
   }
 
   private ResultStore store() throws Exception {
@@ -88,7 +146,7 @@ class ResultStoreTest {
       suiteId,
       "Deployment " + suiteId,
       "Basic",
-      UUID.randomUUID().toString(),
+      "run-" + UUID.randomUUID(),
       "scheduled",
       "passed",
       completedAt.minusSeconds(1),

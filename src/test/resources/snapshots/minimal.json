@@ -1,0 +1,73 @@
+{
+  "failure" : {
+    "kind" : "assertion",
+    "exceptionType" : "org.opentripplanner.assertions.ItineraryAssertionError",
+    "message" : "Expected itinerary did not match",
+    "stackTrace" : "stack trace",
+    "diagnostics" : {
+      "description" : "Itinerary count 1; expected 2..3",
+      "matches" : false,
+      "matchingMode" : null,
+      "expectedLegs" : [ ],
+      "itineraryCriteria" : [ ],
+      "plan" : {
+        "itineraries" : [ {
+          "legs" : [ {
+            "mode" : null,
+            "startTime" : null,
+            "endTime" : null,
+            "durationSeconds" : null,
+            "distanceMeters" : 0.0,
+            "interlineWithPreviousLeg" : false,
+            "realTime" : null,
+            "from" : {
+              "name" : null,
+              "latitude" : 0.0,
+              "longitude" : 0.0
+            },
+            "to" : null
+          } ]
+        } ],
+        "nextPageCursor" : null,
+        "previousPageCursor" : null
+      },
+      "children" : [ ],
+      "itineraryResults" : [ ]
+    }
+  },
+  "request" : {
+    "endpoint" : "https://otp.example",
+    "timeZone" : "America/Chicago",
+    "parameters" : {
+      "fromPlace" : "44.9,-93.2::44.9,-93.2",
+      "toPlace" : "44.95,-93.25::44.95,-93.25",
+      "journeyTime" : "2026-11-06T12:00",
+      "searchDirection" : "DEPART_AT",
+      "numItineraries" : 5,
+      "wheelchair" : false,
+      "modes" : [ "TRANSIT", "WALK" ],
+      "optimize" : "QUICK"
+    },
+    "response" : {
+      "itineraries" : [ {
+        "legs" : [ {
+          "mode" : null,
+          "startTime" : null,
+          "endTime" : null,
+          "durationSeconds" : null,
+          "distanceMeters" : 0.0,
+          "interlineWithPreviousLeg" : false,
+          "realTime" : null,
+          "from" : {
+            "name" : null,
+            "latitude" : 0.0,
+            "longitude" : 0.0
+          },
+          "to" : null
+        } ]
+      } ],
+      "nextPageCursor" : null,
+      "previousPageCursor" : null
+    }
+  }
+}
