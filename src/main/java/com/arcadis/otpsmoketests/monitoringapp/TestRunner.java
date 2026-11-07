@@ -182,10 +182,10 @@ class TestRunner {
     var suite = execution.suite();
     String runId = UUID.randomUUID().toString();
     var startedAt = clock.instant();
-    try (
-      var context = MDC.putCloseable("runId", runId);
-      var suiteContext = MDC.putCloseable("suiteId", suite.id())
-    ) {
+    // Attach these IDs to logs emitted during this suite run.
+    MDC.put("runId", runId);
+    MDC.put("suiteId", suite.id());
+    try {
       var outcome = CustomTestRunner.runTestSuite(
         execution.clazz(),
         suite.suiteName(),
@@ -207,6 +207,9 @@ class TestRunner {
       logReport(report);
       results.publish(report);
       return report;
+    } finally {
+      MDC.remove("suiteId");
+      MDC.remove("runId");
     }
   }
 

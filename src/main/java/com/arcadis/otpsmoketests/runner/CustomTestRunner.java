@@ -53,10 +53,6 @@ public class CustomTestRunner {
     public long getTestsFailedCount() {
       return testResults.stream().mapToLong(t -> t.passed() ? 0 : 1).sum();
     }
-
-    public long getTestsSkippedCount() {
-      return 0;
-    } // For simplicity, we don't handle skipped tests
   }
 
   public static SuiteResult runTestSuite(
