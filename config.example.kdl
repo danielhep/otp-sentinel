@@ -1,6 +1,9 @@
 // Copy this file to config.kdl and replace the URL with your OTP deployment.
 // config.kdl is local to each deployment and is not committed to Git.
 
+// Optional results retention settings; these are the defaults.
+results retention-days=7 max-runs=5000
+
 deployment name="Example OTP" url="https://otp.example.com" {
   test-suite name="Sound Transit" class="SoundTransit" interval="*/10 * * * *"
 }

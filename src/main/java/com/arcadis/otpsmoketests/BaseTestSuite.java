@@ -2,6 +2,7 @@ package com.arcadis.otpsmoketests;
 
 import com.arcadis.otpsmoketests.geocoding.GeocodingService;
 import com.arcadis.otpsmoketests.monitoringapp.TimedOtpApiClient;
+import com.arcadis.otpsmoketests.results.Results;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Metrics;
 import java.time.Clock;
@@ -127,6 +128,10 @@ public abstract class BaseTestSuite {
    */
   public Collection<ExecutableTestCase> testCases() {
     return List.of();
+  }
+
+  public List<Results.Request> drainRequests() {
+    return apiClient.drainRequests();
   }
 
   /**

@@ -24,6 +24,31 @@ for manually running all suites.
 
 JSON suites and extension rules are documented in [JSON test suites](docs/json-test-suites.md).
 
+## Results API
+
+Completed scheduled and manual executions are saved as JSON reports. Read them
+without executing checks:
+
+```text
+GET /api/v1/suites
+GET /api/v1/suites/{suiteId}/latest
+GET /api/v1/runs/{runId}
+```
+
+The latest view includes failure rows with formatted diagnostics for Grafana.
+Individual runs also include every test outcome, resolved journey requests,
+returned itineraries and nested assertion diagnostics. Historical reports remain
+unchanged when a later execution passes.
+
+Reports are stored in `results/` relative to the working directory. Mount
+`/app/results` to persistent storage when using Docker; the example Compose
+configuration includes a named volume. Retention defaults to seven days and
+5,000 runs, retaining each suite's latest completed run even when it becomes
+stale. Configure retention with an optional top-level `results` node in
+`config.kdl`. See the
+[results API documentation](docs/results-api.md) for response examples,
+configuration and Grafana integration.
+
 ## Test suite editor
 
 The React/Vite SPA builds and edits schema v2 JSON suites, with reusable mapped
