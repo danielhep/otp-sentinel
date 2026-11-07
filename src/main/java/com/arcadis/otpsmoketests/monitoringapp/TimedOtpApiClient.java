@@ -2,7 +2,7 @@ package com.arcadis.otpsmoketests.monitoringapp;
 
 import com.arcadis.otpsmoketests.results.DiagnosticSnapshots;
 import com.arcadis.otpsmoketests.results.Results;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.arcadis.otpsmoketests.results.Snapshots;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import java.io.IOException;
@@ -42,7 +42,7 @@ public class TimedOtpApiClient extends OtpApiClient {
       response = super.plan(parameters);
       return response;
     } finally {
-      JsonNode responseSnapshot = null;
+      Snapshots.Plan responseSnapshot = null;
       if (response != null) {
         try {
           responseSnapshot = DiagnosticSnapshots.plan(response);

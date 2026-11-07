@@ -1,6 +1,5 @@
 package com.arcadis.otpsmoketests.results;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
@@ -34,8 +33,8 @@ public final class Results {
   public record Request(
     String endpoint,
     String timeZone,
-    JsonNode parameters,
-    JsonNode response
+    Snapshots.Parameters parameters,
+    Snapshots.Plan response
   ) {}
 
   public record Failure(
@@ -43,7 +42,7 @@ public final class Results {
     String exceptionType,
     String message,
     String stackTrace,
-    JsonNode diagnostics
+    Snapshots.Expectation diagnostics
   ) {}
 
   public record Check(
