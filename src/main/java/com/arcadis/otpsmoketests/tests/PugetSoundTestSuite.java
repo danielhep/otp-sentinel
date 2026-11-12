@@ -64,8 +64,8 @@ public abstract class PugetSoundTestSuite extends BaseTestSuite {
       new GeocodedLocation("1st ave s and s lander", "otp")
     ),
     Map.entry(
-      "e prospect and broadway",
-      new GeocodedLocation("10th Ave E & E Prospect St", "otp")
+      "10th ave e and e howe st",
+      new GeocodedLocation("10th Ave E & E Howe St", "otp")
     ),
     Map.entry(
       "hopelink food bank",
@@ -96,6 +96,14 @@ public abstract class PugetSoundTestSuite extends BaseTestSuite {
     Map.entry(
       "1801 s bush pl",
       new GeocodedLocation("1801 S Bush Place", "openaddresses")
+    ),
+    Map.entry(
+      "35th and avalon",
+      new GeocodedLocation("35th Ave SW & SW Avalon Way", "otp")
+    ),
+    Map.entry(
+      "sea-tac airport terminal",
+      new GeocodedLocation("Sea-Tac Airport Terminal", "openstreetmap")
     ),
     Map.entry(
       "bellevue transit center",

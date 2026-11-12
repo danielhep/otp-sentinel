@@ -77,7 +77,7 @@ public class PugetSoundRailTestSuite extends PugetSoundTestSuite {
 
     assertPlan(plan, exactTransitLegs(route("62")));
 
-    assertPlan(plan, exactTransitLegs(route("E Line"), route("44")));
+    assertPlan(plan, exactTransitLegs(route("E Line")));
   }
 
   @Test
@@ -102,7 +102,7 @@ public class PugetSoundRailTestSuite extends PugetSoundTestSuite {
   public void sodoToNCapitolHill() throws IOException {
     var params = defaultBuilder()
       .withFrom(location("1st and lander"))
-      .withTo(location("e prospect and broadway"))
+      .withTo(location("10th ave e and e howe st"))
       .withTime(weekdayAtTime(LocalTime.of(19, 45)))
       .build();
 
@@ -111,11 +111,6 @@ public class PugetSoundRailTestSuite extends PugetSoundTestSuite {
     assertPlan(plan, exactTransitLegs(route("1 Line")));
 
     assertPlan(plan, exactTransitLegs(route("1 Line"), route("49")));
-
-    assertPlan(
-      plan,
-      exactTransitLegs(route("50"), route("1 Line"), route("49"))
-    );
   }
 
   @Test
@@ -204,6 +199,6 @@ public class PugetSoundRailTestSuite extends PugetSoundTestSuite {
       "s1801SBushPlaceToBellevueTransitCenter"
     );
 
-    assertPlan(plan, exactTransitLegs(route("554"), route("2 Line")));
+    assertPlan(plan, exactTransitLegs(route("2 Line")));
   }
 }

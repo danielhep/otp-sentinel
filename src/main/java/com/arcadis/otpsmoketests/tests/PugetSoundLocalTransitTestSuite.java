@@ -6,6 +6,7 @@ import static org.opentripplanner.assertions.Expectations.route;
 import static org.opentripplanner.assertions.PlanExpectation.itineraryCountBetween;
 
 import java.io.IOException;
+import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -132,6 +133,33 @@ public class PugetSoundLocalTransitTestSuite extends PugetSoundTestSuite {
       exactTransitLegs(
         route("5"),
         route("21").withInterlinedWithPreviousLeg(true)
+      )
+    );
+  }
+
+  @Test
+  @DisplayName("NoahsTest")
+  public void NoahsTest() throws IOException {
+    var params = defaultBuilder()
+      .withFrom(location("35th and avalon"))
+      .withTo(location("sea-tac airport terminal"))
+      .withTime(weekdayAtTime(LocalTime.of(14, 40)))
+      .build();
+
+    var plan = apiClient.timedPlan(params, "NoahsTest");
+
+    assertPlan(
+      plan,
+      exactTransitLegs(
+        route("50").withMode("BUS"),
+        route("1 Line").withMode("TRAM")
+      )
+    );
+    assertPlan(
+      plan,
+      exactTransitLegs(
+        route("21").withMode("BUS"),
+        route("1 Line").withMode("TRAM")
       )
     );
   }
