@@ -13,7 +13,7 @@ journeys a deployment can support.
 | `PugetSoundLocalOnDemand` | 9 | Zip Shuttle, Metro Flex Northshore/Tukwila, Runner, Snoqualmie Valley Door-To-Door, D'Arling Direct and its scheduled DC Direct connection, and rail-to-flex transfers |
 | `PugetSoundSpecializedTransportation` | 13 | Medicaid, volunteer transportation, Road to Recovery, Paratransit, Hyde Shuttle, Beyond the Borders and its Sumner-Bonney Lake Connector, and the existing Bothell Transportation Service check |
 | `PugetSoundFares` | 3 | ORCA prices, rider categories, and fare media for E Line, 1 Line, and the Everett/Community Transit transfer |
-| `SoundTransit` | 1 | Sound Transit's deployment-specific, exact agency inventory; no journey tests |
+| `SoundTransitInventory` | 1 | Sound Transit's deployment-specific, exact agency inventory; no journey tests |
 
 All routing suites run without requiring fare data. `PugetSoundFares` makes
 separate requests and owns every fare assertion. Bus-to-rail journeys belong in
@@ -45,6 +45,9 @@ deployment name="Puget Sound OTP" url="https://otp.example.com" {
   test-suite name="Local On-Demand" class="PugetSoundLocalOnDemand" interval="*/10 * * * *"
   test-suite name="Specialized Transportation" class="PugetSoundSpecializedTransportation" interval="*/10 * * * *"
 
+  // Include only for Sound Transit's exact deployment-specific agency list.
+  test-suite name="Agency Inventory" class="SoundTransitInventory" interval="*/10 * * * *"
+
   // Include only when fare data is available.
   test-suite name="Fares" class="PugetSoundFares" interval="*/10 * * * *"
 }
@@ -59,6 +62,8 @@ the D'Arling/DC Direct feeds. Both Arlington requests use the next Friday, at
 07:49 for the scheduled connection and 07:50 for flex. Other existing service
 times and route alternatives are retained.
 
+`SoundTransitInventory` does not initialize locations or make geocoding requests.
+
 `PugetSoundTestSuite` shares locations, the Seattle geocoder focus, the deployment
 timezone, and flex request setup. Coordinate locations are available immediately;
 geocoded locations are resolved only when a test uses them. An unrelated geocoder
@@ -68,9 +73,9 @@ repeated lookups across suites and deployments.
 ## Migrating existing configurations
 
 - Replace a former `SoundTransit` journey suite with `PugetSoundLocalTransit`,
-  `PugetSoundRail`, and, where supported, `PugetSoundFares`. Keep a separate
-  `SoundTransit` entry if that deployment should enforce the original exact
-  agency inventory.
+  `PugetSoundRail`, and, where supported, `PugetSoundFares`. Add a separate
+  `SoundTransitInventory` entry if that deployment should enforce the original
+  exact agency inventory. `SoundTransitTestSuite` has been removed.
 - Replace `HopeLink` with `PugetSoundLocalOnDemand` and
   `PugetSoundSpecializedTransportation`. `HopeLinkTestSuite` has been removed.
 - Suite names determine generated result IDs and metric names. Choose distinct

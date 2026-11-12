@@ -20,7 +20,7 @@ display names:
 
 ```kdl
 deployment name="Hope Link Prod" url="https://example.com" {
-  test-suite id="hopelink-prod.basic" name="Hope Link Basic" class="HopeLink" interval="*/10 * * * *"
+  test-suite id="hopelink-prod.local-on-demand" name="Local On-Demand" class="PugetSoundLocalOnDemand" interval="*/10 * * * *"
 }
 ```
 
@@ -34,13 +34,13 @@ Duplicate IDs or metric suffixes are rejected at startup.
 
 ## Latest result
 
-`GET /api/v1/suites/hopelink-prod.basic/latest` returns a response like:
+`GET /api/v1/suites/hopelink-prod.local-on-demand/latest` returns a response like:
 
 ```json
 {
-  "suiteId": "hopelink-prod.basic",
+  "suiteId": "hopelink-prod.local-on-demand",
   "deploymentName": "Hope Link Prod",
-  "suiteName": "Hope Link Basic",
+  "suiteName": "Local On-Demand",
   "runId": "03b25a91-7e6f-4e2a-a439-7e850b81ca52",
   "status": "failed",
   "startedAt": "2026-11-03T18:20:00Z",
@@ -48,7 +48,7 @@ Duplicate IDs or metric suffixes are rejected at startup.
   "durationMs": 2100,
   "counts": {"total": 12, "passed": 11, "failed": 1},
   "failures": [{
-    "suiteId": "hopelink-prod.basic",
+    "suiteId": "hopelink-prod.local-on-demand",
     "runId": "03b25a91-7e6f-4e2a-a439-7e850b81ca52",
     "completedAt": "2026-11-03T18:20:02Z",
     "testId": "airport",
