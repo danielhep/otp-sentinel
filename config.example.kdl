@@ -5,5 +5,10 @@
 results retention-days=7 max-runs=5000
 
 deployment name="Example OTP" url="https://otp.example.com" {
-  test-suite name="Sound Transit" class="SoundTransit" interval="*/10 * * * *"
+  test-suite name="Local Transit" class="PugetSoundLocalTransit" interval="*/10 * * * *"
+  test-suite name="Rail" class="PugetSoundRail" interval="*/10 * * * *"
+  test-suite name="Agency Inventory" class="SoundTransitInventory" interval="*/10 * * * *"
+
+  // Include only when fare data is available.
+  test-suite name="Fares" class="PugetSoundFares" interval="*/10 * * * *"
 }
