@@ -43,6 +43,7 @@ public final class SoundTransitInventoryTestSuite extends BaseTestSuite {
 
     var expectedAgencies = Stream
       .of(
+        "Amtrak",
         "City of Seattle",
         "Community Transit",
         "Everett Transit",
@@ -51,10 +52,8 @@ public final class SoundTransitInventoryTestSuite extends BaseTestSuite {
         "Metro Transit",
         "Pierce Transit",
         "Seattle Center Monorail",
-        "Skagit Transit",
         "Sound Transit",
-        "Washington State Ferries",
-        "Whatcom Transportation Authority"
+        "Washington State Ferries"
       )
       .sorted()
       .toList();
@@ -63,7 +62,7 @@ public final class SoundTransitInventoryTestSuite extends BaseTestSuite {
       actualAgencies.containsAll(expectedAgencies) &&
       expectedAgencies.containsAll(actualAgencies),
       String.format(
-        "Agency lists differ.%nExpected: %s%nActual: %s%nMissing from expected: %s%nMissing from actual: %s",
+        "Agency lists differ.%nExpected: %s%nActual: %s%nMissing agencies: %s%nUnexpected agencies: %s",
         expectedAgencies,
         actualAgencies,
         expectedAgencies
