@@ -38,9 +38,18 @@
     </dependencyManagement>
 
     <repositories>
+        <!-- Published dependencies, including the OTP client, come from Central. -->
+        <repository>
+            <id>central</id>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
+        <!-- kdl4j is only published to JitPack. -->
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
     </repositories>
 

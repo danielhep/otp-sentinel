@@ -56,6 +56,18 @@ public abstract class PugetSoundTestSuite extends BaseTestSuite {
       new GeocodedLocation("South Bellevue", "otp")
     ),
     Map.entry(
+      "lynnwood city center",
+      new GeocodedLocation("Lynnwood City Center", "otp")
+    ),
+    Map.entry(
+      "federal way downtown",
+      new GeocodedLocation("Federal Way Downtown", "otp")
+    ),
+    Map.entry(
+      "downtown redmond",
+      new GeocodedLocation("Downtown Redmond", "otp")
+    ),
+    Map.entry(
       "climate pledge",
       new GeocodedLocation("Climate Pledge", "openstreetmap")
     ),

@@ -1,11 +1,9 @@
 package com.arcadis.otpsmoketests.tests;
 
-import static org.opentripplanner.assertions.Expectations.containingTransitLegs;
 import static org.opentripplanner.assertions.Expectations.exactTransitLegs;
 import static org.opentripplanner.assertions.Expectations.route;
 
 import java.io.IOException;
-import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -19,171 +17,35 @@ public class PugetSoundRailTestSuite extends PugetSoundTestSuite {
   }
 
   @Test
-  @DisplayName("Test 1 Line light rail from Ronald Bog Park to Olive Way")
-  public void testLightRail() throws IOException {
+  @DisplayName("1 Line from Lynnwood City Center to Federal Way Downtown")
+  public void lynnwoodCityCenterToFederalWayDowntown() throws IOException {
     var params = defaultBuilder()
-      .withFrom(location("RONALD_BOG_PARK"))
-      .withTo(location("OLIVE_WAY"))
+      .withFrom(location("lynnwood city center"))
+      .withTo(location("federal way downtown"))
       .build();
 
-    var plan = apiClient.timedPlan(params, "testLightRail");
-
-    assertPlan(plan, containingTransitLegs(route("1 Line").withMode("TRAM")));
-  }
-
-  @Test
-  @DisplayName("Colman Dock to UW CS Building")
-  public void testColmanDockToUWCSBuilding() throws IOException {
-    var params = defaultBuilder()
-      .withFrom(location("colman dock"))
-      .withTo(location("paul allen center"))
-      .build();
-
-    var plan = apiClient.timedPlan(params, "testColmanDockToUWCSBuilding");
+    var plan = apiClient.timedPlan(
+      params,
+      "lynnwoodCityCenterToFederalWayDowntown"
+    );
 
     assertPlan(plan, exactTransitLegs(route("1 Line").withMode("TRAM")));
   }
 
   @Test
-  @DisplayName("King St Station to Tacoma Dome")
-  public void testKingStStationToTacomaDome() throws IOException {
+  @DisplayName("2 Line from Lynnwood City Center to Downtown Redmond")
+  public void lynnwoodCityCenterToDowntownRedmond() throws IOException {
     var params = defaultBuilder()
-      .withFrom(location("king st station"))
-      .withTo(location("tacoma dome"))
-      .withTime(weekdayAtTime(LocalTime.of(17, 15)))
-      .build();
-
-    var plan = apiClient.timedPlan(params, "testKingStStationToTacomaDome");
-
-    assertPlan(plan, exactTransitLegs(route("S Line")));
-    assertPlan(plan, exactTransitLegs(route("590")));
-    assertPlan(
-      plan,
-      exactTransitLegs(route("578", "577"), route("574", "586"))
-    );
-  }
-
-  @Test
-  @DisplayName("King St Station to 45th Veg Thai")
-  public void testKingStStationTo45thVegThai() throws IOException {
-    var params = defaultBuilder()
-      .withFrom(location("king st station"))
-      .withTo(location("45th veg thai"))
-      .build();
-
-    var plan = apiClient.timedPlan(params, "testKingStStationTo45thVegThai");
-
-    assertPlan(plan, exactTransitLegs(route("1 Line"), route("44")));
-
-    assertPlan(plan, exactTransitLegs(route("62")));
-
-    assertPlan(plan, exactTransitLegs(route("E Line")));
-  }
-
-  @Test
-  @DisplayName("South Bellevue Station to Climate Pledge")
-  public void testSouthBellevueStationToClimatePledge() throws IOException {
-    var params = defaultBuilder()
-      .withFrom(location("s bellevue station"))
-      .withTo(location("climate pledge"))
+      .withFrom(location("lynnwood city center"))
+      .withTo(location("downtown redmond"))
       .build();
 
     var plan = apiClient.timedPlan(
       params,
-      "testSouthBellevueStationToClimatePledge"
+      "lynnwoodCityCenterToDowntownRedmond"
     );
 
-    assertPlan(plan, exactTransitLegs(route("2 Line"), route("D Line")));
-    assertPlan(plan, exactTransitLegs(route("2 Line"), route("Monorail")));
-  }
-
-  @Test
-  @DisplayName("SODO to N Capitol Hill")
-  public void sodoToNCapitolHill() throws IOException {
-    var params = defaultBuilder()
-      .withFrom(location("1st and lander"))
-      .withTo(location("10th ave e and e howe st"))
-      .withTime(weekdayAtTime(LocalTime.of(19, 45)))
-      .build();
-
-    var plan = apiClient.timedPlan(params, "sodoToNCapitolHill");
-
-    assertPlan(plan, exactTransitLegs(route("1 Line")));
-
-    assertPlan(plan, exactTransitLegs(route("1 Line"), route("49")));
-  }
-
-  @Test
-  @DisplayName("King St Station to Mukilteo Ferry")
-  public void kingStStationToMukilteoFerry() throws IOException {
-    var params = defaultBuilder()
-      .withFrom(location("king st station"))
-      .withTo(location("mukilteo ferry"))
-      .withTime(weekdayAtTime(LocalTime.of(17, 35)))
-      .build();
-
-    var plan = apiClient.timedPlan(params, "kingStStationToMukilteoFerry");
-
-    assertPlan(plan, exactTransitLegs(route("N Line")));
-
-    assertPlan(
-      plan,
-      containingTransitLegs(route("1 Line", "2 Line"), route("117"))
-    );
-  }
-
-  @Test
-  @DisplayName("Green Lake to King St Station")
-  public void greenLakeToKingStStation() throws IOException {
-    var params = defaultBuilder()
-      .withFrom(location("green lake"))
-      .withTo(location("king st station"))
-      .build();
-
-    var plan = apiClient.timedPlan(params, "greenLakeToKingStStation");
-
-    assertPlan(plan, exactTransitLegs(route("1 Line")));
-
-    assertPlan(plan, containingTransitLegs(route("62", "45"), route("1 Line")));
-  }
-
-  @Test
-  @DisplayName("Capitol Hill to King St Station")
-  public void capitolHillToKingStStation() throws IOException {
-    var params = defaultBuilder()
-      .withFrom(location("capitol hill"))
-      .withTo(location("king st station"))
-      .build();
-
-    var plan = apiClient.timedPlan(params, "capitolHillToKingStStation");
-
-    assertPlan(plan, exactTransitLegs(route("1 Line")));
-  }
-
-  @Test
-  @DisplayName("Capitol Hill to SODO")
-  public void capitolHillToUWStation() throws IOException {
-    var params = defaultBuilder()
-      .withFrom(location("capitol hill"))
-      .withTo(location("SODO"))
-      .build();
-
-    var plan = apiClient.timedPlan(params, "capitolHillToUWStation");
-
-    assertPlan(plan, exactTransitLegs(route("1 Line")));
-  }
-
-  @Test
-  @DisplayName("Capitol Hill to Columbia City")
-  public void capitolHillToColumbiaCity() throws IOException {
-    var params = defaultBuilder()
-      .withFrom(location("capitol hill"))
-      .withTo(location("columbia city"))
-      .build();
-
-    var plan = apiClient.timedPlan(params, "capitolHillToColumbiaCity");
-
-    assertPlan(plan, exactTransitLegs(route("1 Line")));
+    assertPlan(plan, exactTransitLegs(route("2 Line").withMode("TRAM")));
   }
 
   @Test

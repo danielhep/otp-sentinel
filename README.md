@@ -67,18 +67,16 @@ stay in browser memory until downloaded.
 
 ## Building
 
-The runner requires the companion `otp-java-client` **3.0.0-SNAPSHOT**. Build and
-install that checkout locally before building this project:
+The runner requires Java 21 or newer and Maven. It uses the published
+`otp-java-client` **3.0.0** artifacts from Maven Central; a local companion
+checkout or snapshot install is not required. JitPack supplies `kdl4j`.
 
 ```sh
-cd ../otp-java-client
-mvn -Dtest='*Test,!IntegrationTest' -Dsurefire.failIfNoSpecifiedTests=false -Dgpg.skip=true -Dmaven.javadoc.skip=true install
-cd ../otp-sentinel
 mvn test package
 ```
 
 The build produces `target/otp-sentinel-1.0-SNAPSHOT.jar`.
 
-A clean CI or Docker build needs this snapshot in its configured artifact
-repository or a published version containing these changes, followed by an
-update to `otp.client.version` in `pom.xml`.
+CI and Docker use the same published dependencies. If a build still requests
+`3.0.0-SNAPSHOT`, verify that it uses the current `pom.xml` and does not override
+`otp.client.version` with an older value.
