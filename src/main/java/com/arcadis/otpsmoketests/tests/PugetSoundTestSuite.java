@@ -68,8 +68,8 @@ public abstract class PugetSoundTestSuite extends BaseTestSuite {
       new GeocodedLocation("Downtown Redmond", "otp")
     ),
     Map.entry(
-      "climate pledge",
-      new GeocodedLocation("Climate Pledge", "openstreetmap")
+      "seattle center",
+      new GeocodedLocation("Seattle Center", "openstreetmap")
     ),
     Map.entry(
       "1st and lander",

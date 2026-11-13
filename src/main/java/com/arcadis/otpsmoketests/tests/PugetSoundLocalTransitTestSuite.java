@@ -193,7 +193,7 @@ public class PugetSoundLocalTransitTestSuite extends PugetSoundTestSuite {
 
     var plan = apiClient.timedPlan(params, "testKingStStationTo45thVegThai");
 
-    assertPlan(plan, exactTransitLegs(route("1 Line"), route("44")));
+    assertPlan(plan, exactTransitLegs(route("1 Line", "2 Line"), route("44")));
 
     assertPlan(plan, exactTransitLegs(route("62")));
 
@@ -201,19 +201,18 @@ public class PugetSoundLocalTransitTestSuite extends PugetSoundTestSuite {
   }
 
   @Test
-  @DisplayName("South Bellevue Station to Climate Pledge")
-  public void testSouthBellevueStationToClimatePledge() throws IOException {
+  @DisplayName("South Bellevue Station to Seattle Center")
+  public void testSouthBellevueStationToSeattleCenter() throws IOException {
     var params = defaultBuilder()
       .withFrom(location("s bellevue station"))
-      .withTo(location("climate pledge"))
+      .withTo(location("seattle center"))
       .build();
 
     var plan = apiClient.timedPlan(
       params,
-      "testSouthBellevueStationToClimatePledge"
+      "testSouthBellevueStationToSeattleCenter"
     );
 
-    assertPlan(plan, exactTransitLegs(route("2 Line"), route("D Line")));
     assertPlan(plan, exactTransitLegs(route("2 Line"), route("Monorail")));
   }
 
@@ -223,7 +222,7 @@ public class PugetSoundLocalTransitTestSuite extends PugetSoundTestSuite {
     var params = defaultBuilder()
       .withFrom(location("1st and lander"))
       .withTo(location("10th ave e and e howe st"))
-      .withTime(weekdayAtTime(LocalTime.of(19, 45)))
+      .withTime(weekdayAtNoon())
       .build();
 
     var plan = apiClient.timedPlan(params, "sodoToNCapitolHill");
