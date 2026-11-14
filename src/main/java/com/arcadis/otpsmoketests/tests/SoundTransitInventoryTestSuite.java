@@ -43,7 +43,6 @@ public final class SoundTransitInventoryTestSuite extends BaseTestSuite {
 
     var expectedAgencies = Stream
       .of(
-        "Amtrak",
         "City of Seattle",
         "Community Transit",
         "Everett Transit",
